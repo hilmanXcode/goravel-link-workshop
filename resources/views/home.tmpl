@@ -7,8 +7,21 @@
   <title>{{ .title }}</title>
 </head>
 <body>
-  <h1>{{ .title }}</h1>
-  <p>Halo dari Goravel!</p>
+  <h1>🔗 {{ .title }}</h1>
+  <p>Pendekkan link panjang jadi link pendek.</p>
+
+  {{ if .created }}
+    <p class="ok">✅ Link pendek kamu: <a href="/{{ .created }}">http://{{ .host }}/{{ .created }}</a></p>
+  {{ end }}
+  {{ if .error }}
+    <p class="err" role="alert">❌ {{ .error }}</p>
+  {{ end }}
+
+  <form method="post" action="/links">
+    <label for="url" hidden>URL panjang</label>
+    <input id="url" name="url" type="text" value="{{ .url }}" placeholder="https://contoh.com/artikel-panjang" required>
+    <button type="submit">Pendekkan</button>
+  </form>
 </body>
 </html>
 {{ end }}
