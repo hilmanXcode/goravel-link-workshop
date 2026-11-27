@@ -43,8 +43,7 @@ Folder `.agents/` dan `.github/`, konfigurasi `.env`, serta database lokal diaba
 | Path | Fungsi |
 |---|---|
 | `routes/web.go` | Daftar URL |
-| `app/http/controllers/link_controller.go` | Logika halaman |
-| `app/http/requests/store_link_request.go` | Aturan validasi |
+| `app/http/controllers/link_controller.go` | Logika halaman dan validasi URL langsung di `Store` |
 | `app/models/link.go` | Model tabel `links` |
 | `database/migrations/` | Struktur tabel |
 | `resources/views/home.tmpl` | Tampilan HTML |
