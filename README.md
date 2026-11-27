@@ -49,6 +49,15 @@ Folder `.agents/` dan `.github/`, konfigurasi `.env`, serta database lokal diaba
 | `database/migrations/` | Struktur tabel |
 | `resources/views/home.tmpl` | Tampilan HTML |
 
+## Contekan dasar Go
+
+Folder [`contekan-go/`](contekan-go/README.md) tersedia di semua branch: panduan untuk pemateri, urutan demo, latihan, dan contoh runnable tanpa server atau database.
+
+```bash
+go run ./contekan-go
+go test ./contekan-go
+```
+
 ## Pengujian
 
 ```bash
