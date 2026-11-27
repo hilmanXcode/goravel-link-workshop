@@ -5,6 +5,17 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{{ .title }}</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 720px; margin: 2rem auto; padding: 0 1rem; color: #1f2937; }
+    h1 { margin-bottom: .25rem; }
+    form { display: flex; gap: .5rem; margin: 1.5rem 0; }
+    input { flex: 1; padding: .6rem; border: 1px solid #d1d5db; border-radius: .4rem; }
+    button { padding: .6rem 1rem; border: 0; border-radius: .4rem; background: #2563eb; color: #fff; cursor: pointer; }
+    .ok { background: #ecfdf5; padding: .75rem; border-radius: .4rem; }
+    .err { background: #fef2f2; padding: .75rem; border-radius: .4rem; }
+    table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+    th, td { text-align: left; padding: .5rem; border-bottom: 1px solid #e5e7eb; word-break: break-all; }
+  </style>
 </head>
 <body>
   <h1>🔗 {{ .title }}</h1>
@@ -22,6 +33,24 @@
     <input id="url" name="url" type="text" value="{{ .url }}" placeholder="https://contoh.com/artikel-panjang" required>
     <button type="submit">Pendekkan</button>
   </form>
+
+  <h2>Link terbaru</h2>
+  {{ if .links }}
+    <table>
+      <thead><tr><th>Link pendek</th><th>URL asli</th><th>Klik</th></tr></thead>
+      <tbody>
+        {{ range .links }}
+          <tr>
+            <td><a href="/{{ .Code }}">/{{ .Code }}</a></td>
+            <td>{{ .URL }}</td>
+            <td>{{ .Clicks }}</td>
+          </tr>
+        {{ end }}
+      </tbody>
+    </table>
+  {{ else }}
+    <p>Belum ada link. Buat yang pertama di atas!</p>
+  {{ end }}
 </body>
 </html>
 {{ end }}

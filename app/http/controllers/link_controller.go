@@ -72,8 +72,14 @@ func (r *LinkController) Show(ctx http.Context) http.Response {
 }
 
 func (r *LinkController) render(ctx http.Context, data map[string]any) http.Response {
+	var links []models.Link
+	if err := facades.Orm().Query().Order("id desc").Limit(20).Get(&links); err != nil {
+		return ctx.Response().String(nethttp.StatusInternalServerError, err.Error())
+	}
+
 	data["title"] = "Goravel Link"
 	data["host"] = ctx.Request().Host()
+	data["links"] = links
 
 	return ctx.Response().View().Make("home.tmpl", data)
 }
