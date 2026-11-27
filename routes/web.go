@@ -10,4 +10,5 @@ func Web() {
 
 	facades.Route().Get("/", linkController.Index)
 	facades.Route().Post("/links", linkController.Store)
+	facades.Route().Get("/{code}", linkController.Show)
 }

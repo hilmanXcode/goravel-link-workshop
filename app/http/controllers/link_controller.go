@@ -53,6 +53,24 @@ func (r *LinkController) Store(ctx http.Context) http.Response {
 	return ctx.Response().Redirect(nethttp.StatusSeeOther, "/?created="+link.Code)
 }
 
+// Show mencari link berdasarkan kode, menambah hitungan klik, lalu redirect ke URL asli.
+func (r *LinkController) Show(ctx http.Context) http.Response {
+	var link models.Link
+	if err := facades.Orm().Query().Where("code", ctx.Request().Route("code")).First(&link); err != nil {
+		return ctx.Response().String(nethttp.StatusInternalServerError, err.Error())
+	}
+	if link.ID == 0 {
+		return ctx.Response().String(nethttp.StatusNotFound, "Link tidak ditemukan")
+	}
+
+	// UPDATE atomik di database, aman kalau banyak klik bersamaan
+	if _, err := facades.Orm().Query().Exec("UPDATE links SET clicks = clicks + 1 WHERE id = ?", link.ID); err != nil {
+		return ctx.Response().String(nethttp.StatusInternalServerError, err.Error())
+	}
+
+	return ctx.Response().Redirect(nethttp.StatusFound, link.URL)
+}
+
 func (r *LinkController) render(ctx http.Context, data map[string]any) http.Response {
 	data["title"] = "Goravel Link"
 	data["host"] = ctx.Request().Host()
