@@ -6,9 +6,9 @@ import (
 	nethttp "net/http"
 
 	"github.com/goravel/framework/contracts/http"
+	"github.com/goravel/framework/validation"
 
 	"goravel/app/facades"
-	"goravel/app/http/requests"
 	"goravel/app/models"
 )
 
@@ -32,12 +32,27 @@ func (r *LinkController) Index(ctx http.Context) http.Response {
 
 // Store memvalidasi URL, menyimpannya dengan kode acak, lalu kembali ke halaman utama.
 func (r *LinkController) Store(ctx http.Context) http.Response {
-	var req requests.StoreLinkRequest
-	errs, err := ctx.Request().ValidateRequest(&req)
+	validator, err := ctx.Request().Validate(map[string]any{
+		// regex: hanya izinkan http/https supaya tidak ada skema aneh seperti javascript:
+		"url": "required|url|max_len:2048|regex:^https?://",
+	}, validation.Filters(map[string]any{
+		"url": "trim",
+	}), validation.Messages(map[string]string{
+		"url.required": "URL wajib diisi.",
+		"url.url":      "Format URL tidak valid, contoh: https://contoh.com",
+		"url.max_len":  "URL terlalu panjang (maksimal 2048 karakter).",
+		"url.regex":    "URL harus diawali http:// atau https://",
+	}))
 	if err != nil {
 		return ctx.Response().String(nethttp.StatusInternalServerError, err.Error())
 	}
-	if errs != nil {
+	var req struct {
+		URL string `form:"url" json:"url"`
+	}
+	if err := validator.Bind(&req); err != nil {
+		return ctx.Response().String(nethttp.StatusInternalServerError, err.Error())
+	}
+	if errs := validator.Errors(); errs != nil {
 		return r.render(ctx, map[string]any{
 			"error": errs.One(),
 			"url":   ctx.Request().Input("url"),
